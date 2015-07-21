@@ -4,7 +4,9 @@
 - First, you need to install Flask as reference below.
 - Go to *server* folder, use command:
 
-  python main.py
+```shell
+python main.py
+```
 
 - In browser, go to *http://127.0.0.1:5000/esxtop*. Now it is only a static page using bootstrap.
 
