@@ -1,0 +1,41 @@
+
+[
+    {
+        "time": "xxx", 
+        "proccess time": [
+            {
+                "cpu0": 40
+            }, 
+            {
+                "cpu1": 50
+            }
+        ], 
+        "utile time": [
+            {
+                "cpu0": 40
+            }, 
+            {
+                "cpu1": 40
+            }
+        ]
+    }, 
+    {
+        "time": "xxx", 
+        "proccess time": [
+            {
+                "cpu0": 40
+            }, 
+            {
+                "cpu1": 50
+            }
+        ], 
+        "utile time": [
+            {
+                "cpu0": 40
+            }, 
+            {
+                "cpu1": 40
+            }
+        ]
+    }
+]
