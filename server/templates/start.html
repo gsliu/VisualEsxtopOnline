@@ -42,53 +42,115 @@
       </div>
     </nav>
 
-    <!--<div class="container">
-
-      <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
-
-    </div><!-- /.container -->
-
     <div id="container" style="width:100%; height:400px;"></div>
     <script language="JavaScript">
 
     $(function() {
-        Highcharts.setOptions({
+    Highcharts.setOptions({
+        chart: {
+            backgroundColor: {
+                linearGradient: [0, 0, 500, 500],
+                stops: [
+                    [0, 'rgb(255, 255, 255)'],
+                    [1, 'rgb(240, 255, 255)']
+                    ]
+            },
+            borderWidth: 2,
+            plotBackgroundColor: 'rgba(255, 225, 255, .9)',
+            plotShadow: true,
+            plotBorderWidth: 1
+        }
+    });
+});
+
+$(document).ready(function() {
+
+    var seriesOptions = [];
+    var seriesCounter = 0;
+    var names = ['data1','data2'];
+
+    $.each(names, function (i, name) {
+        var start = +new Date();
+           createChart = function(){
+        $('#container').highcharts('StockChart', {
             chart: {
-                backgroundColor: {
-                    linearGradient: [0, 0, 500, 500],
-                    stops: [
-                        [0, 'rgb(255, 255, 255)'],
-                        [1, 'rgb(240, 255, 255)']
-                        ]
+                events: {
+                    load: function () {
+                        if (!window.isComparing) {
+                            this.setTitle(null, {
+                                text: 'Built chart in ' + (new Date() - start) + 'ms'
+                            });
+                        }
+                    }
                 },
-                borderWidth: 2,
-                plotBackgroundColor: 'rgba(255, 225, 255, .9)',
-                plotShadow: true,
-                plotBorderWidth: 1
+                zoomType: 'x'
+            },
+
+            rangeSelector: {
+
+                buttons: [{
+                    type: 'day',
+                    count: 3,
+                    text: '3d'
+                }, {
+                    type: 'week',
+                    count: 1,
+                    text: '1week'
+                }, {
+                    type: 'month',
+                    count: 1,
+                    text: '1m'
+                }, {
+                    type: 'month',
+                    count: 6,
+                    text: '6m'
+                }, {
+                    type: 'year',
+                    count: 1,
+                    text: '1y'
+                }, {
+                    type: 'all',
+                    text: 'All'
+                }],
+                selected: 3
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Temperature (°C)'
+                }
+            },
+
+            title: {
+                text: 'Hourly temperatures in Vik i Sogn, Norway, 2009-2015'
+            },
+
+            subtitle: {
+                text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
+            },
+
+            series: seriesOptions
+        });}
+           $.getJSON("../static/data/" + name + '.json', function (data) {
+        
+           seriesOptions[i] = {
+                name: name,
+                data: data.data,
+                pointStart: data.pointStart,
+                pointInterval: data.pointInterval,
+                tooltip: {
+                    valueDecimals: 1,
+                    valueSuffix: '°C'
+                }
+            };
+            seriesCounter += 1;
+            if (seriesCounter === names.length) {
+                createChart();
             }
         });
     });
 
-    $(document).ready(function() {
-
-        var options = {
-            chart: {
-                renderTo: 'container',
-                type: 'spline'
-            },
-
-            series: [{}]
-        };
-
-        $.getJSON("{{ url_for('static', filename='data/data.json') }}", function(data) {
-            options.series[0].data = data;
-            var chart = new Highcharts.Chart(options);
-        });
-
-    });
+});
 
 
     </script>
