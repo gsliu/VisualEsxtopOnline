@@ -8,6 +8,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
+    <title>taiji</title>
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 
     <title>VisualEsxtopOnline</title>
@@ -17,11 +18,75 @@
 
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <style>
+      body {
+          position: relative;
+      }
+      ul.nav-pills {
+          top: 20px;
+          position: fixed;
+      }
+      div.col-sm-9 div {
+          height: 250px;
+          font-size: 28px;
+      }
+      #CPU {color: #fff; background-color: #1E88E5;}
+      #Memory {color: #fff; background-color: #673ab7;}
+      #ProcessTime{color: #fff; background-color: #ff9800;}
+      #UtilTime {color: #fff; background-color: #00bcd4;}
+      #Kernel {color: #fff; background-color: #009688;}
+      #NonKernel {color: #fff; background-color: #1E88E5;}
+      #KernelState​ {color: #fff; background-color: #673ab7;}
+      #SwapUsed {color: #fff; background-color: #ff9800;}
+      #SwapMBytesRead {color: #fff; background-color: #00bcd4;}
+      #SwapMBytesWrite {color: #fff; background-color: #009688;}
+      
+      @media screen and (max-width: 810px) {
+        #CPU, #Memory, #ProcessTime, #UtilTime, #Kernel, #NonKernel, #KernelState​, #SwapUsed, #SwapMBytesRead, #SwapMBytesWrite  {
+            margin-left: 150px;
+        }
+      }
+      </style>
   </head>
 
-  <body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+<body data-spy="scroll" data-target="#myScrollspy" data-offset="20">
+
+    <div class="container0">
+      <div class="row">
+        <nav class="col-sm-2" id="myScrollspy">
+          <ul class="nav nav-pills nav-stacked">
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">CPU<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="javascript:ProcessTime()">ProcessTime</a></li>
+                <li><a href="#UtilTime">Util Time</a></li>                   
+              </ul>
+            </li>
+            
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#">Memory<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#Kernel">Kernel</a></li>
+                <li><a href="#NonKernel">NonKernel</a></li> 
+                <li><a href="#KernelState​">Kernel State​</a></li>   
+                <li><a href="#SwapUsed">Swap Used</a></li>   
+                <li><a href="#SwapMBytesRead">Swap MBytes Read</a></li>   
+                <li><a href="#SwapMBytesWrite">Swap MBytes Write</a></li>                              
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <div class="col-sm-10">
+          <div id="Chart">    
+            <h1>Chart</h1>
+                <div id="container" style="width:100%; height:400px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--<nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -38,12 +103,11 @@
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
-        </div><!--/.nav-collapse -->
+        </div>
       </div>
-    </nav>
+    </nav>-->
 
-    <div id="container" style="width:100%; height:400px;"></div>
-    <script language="JavaScript">
+<script language="JavaScript">
 
     $(function() {
         Highcharts.setOptions({
@@ -63,7 +127,7 @@
         });
     });
 
-$(document).ready(function() {
+ProcessTime = function(){
 
     var seriesOptions = [];
     var seriesCounter = 0;
@@ -90,6 +154,18 @@ $(document).ready(function() {
                         }
                     },
                     zoomType: 'x'
+                },
+
+                legend: {
+                    enabled: true,
+                    align: 'right',
+                    backgroundColor: '#FCFFC5',
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    layout: 'vertical',
+                    verticalAlign: 'top',
+                    y: 100,
+                    shadow: true
                 },
 
                 rangeSelector: {
@@ -146,7 +222,7 @@ $(document).ready(function() {
                     pointInterval: data.pointInterval,
                     tooltip: {
                         valueDecimals: 1,
-                        valueSuffix: '°C'
+                        valueSuffix: '%'
                     }
                 };
                 seriesCounter += 1;
@@ -156,7 +232,7 @@ $(document).ready(function() {
             });
         });
     });
-});
+};
 
 
 </script>
