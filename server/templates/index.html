@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+    <title>VisualEsxtopOnline</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <script language="javascript">
+        function Checkfiles()
+        {
+            var fup = document.getElementById('filename');
+            var fileName = fup.value;
+            if (fup.value === "") {
+                alert("Please select a file to upload!");
+                fup.focus();
+                return false;
+            }
+            var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+            if(ext == "gz" || ext == "tar" || ext == "bz" || ext == "zip" || ext == "csv")  {
+              return true;
+            }
+            else {
+                alert("Upload esxtop data only!");
+                fup.focus();
+                return false;
+            }
+        }
+</script>
+  </head>
+
+  <body>
+
+    <div class="container">
+      <h1>Welcome to VisualEsxtopOnline</h1>
+    </div>
+
+    <div class="container">
+        <h2>Create a new LPA task</h2>
+        <form action="" method=post enctype=multipart/form-data onsubmit="return Checkfiles();">
+            <table class="table">
+                <tr>
+                    <td>
+                    <div id="upload-div" class="ui-widget">
+                      <input type="file" title="upload an esxtop data file" class="btn-info" name="file" id="filename">
+                    </div>
+                    </td>
+                    <td style="text-align:right">
+                        <div class="ui-widget">
+                            <input type=submit class="btn btn-danger" value="Start a new task">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  </body>
+</html>
