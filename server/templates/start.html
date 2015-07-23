@@ -46,114 +46,120 @@
     <script language="JavaScript">
 
     $(function() {
-    Highcharts.setOptions({
-        chart: {
-            backgroundColor: {
-                linearGradient: [0, 0, 500, 500],
-                stops: [
-                    [0, 'rgb(255, 255, 255)'],
-                    [1, 'rgb(240, 255, 255)']
-                    ]
-            },
-            borderWidth: 2,
-            plotBackgroundColor: 'rgba(255, 225, 255, .9)',
-            plotShadow: true,
-            plotBorderWidth: 1
-        }
+        Highcharts.setOptions({
+            chart: {
+                backgroundColor: {
+                    linearGradient: [0, 0, 500, 500],
+                    stops: [
+                        [0, 'rgb(255, 255, 255)'],
+                        [1, 'rgb(240, 255, 255)']
+                        ]
+                },
+                borderWidth: 2,
+                plotBackgroundColor: 'rgba(255, 225, 255, .9)',
+                plotShadow: true,
+                plotBorderWidth: 1
+            }
+        });
     });
-});
 
 $(document).ready(function() {
 
     var seriesOptions = [];
     var seriesCounter = 0;
-    var names = ['data1','data2'];
+    $.getJSON('../static/data/cpu.json', function (cpuNames){
+        var keys = Object.keys(cpuNames);
+        var names = new Array();
 
-    $.each(names, function (i, name) {
-        var start = +new Date();
-           createChart = function(){
-        $('#container').highcharts('StockChart', {
-            chart: {
-                events: {
-                    load: function () {
-                        if (!window.isComparing) {
-                            this.setTitle(null, {
-                                text: 'Built chart in ' + (new Date() - start) + 'ms'
-                            });
+        for (var i = 0; i < cpuNames[keys].length; i++) {
+            names[i] = cpuNames[keys][i];
+        }
+
+        $.each(names, function (i, name) {
+            var start = +new Date();
+               createChart = function(){
+            $('#container').highcharts('StockChart', {
+                chart: {
+                    events: {
+                        load: function () {
+                            if (!window.isComparing) {
+                                this.setTitle(null, {
+                                    text: 'Built chart in ' + (new Date() - start) + 'ms'
+                                });
+                            }
                         }
+                    },
+                    zoomType: 'x'
+                },
+
+                rangeSelector: {
+
+                    buttons: [{
+                        type: 'day',
+                        count: 3,
+                        text: '3d'
+                    }, {
+                        type: 'week',
+                        count: 1,
+                        text: '1week'
+                    }, {
+                        type: 'month',
+                        count: 1,
+                        text: '1m'
+                    }, {
+                        type: 'month',
+                        count: 6,
+                        text: '6m'
+                    }, {
+                        type: 'year',
+                        count: 1,
+                        text: '1y'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }],
+                    selected: 3
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'usage (%)'
                     }
                 },
-                zoomType: 'x'
-            },
 
-            rangeSelector: {
-
-                buttons: [{
-                    type: 'day',
-                    count: 3,
-                    text: '3d'
-                }, {
-                    type: 'week',
-                    count: 1,
-                    text: '1week'
-                }, {
-                    type: 'month',
-                    count: 1,
-                    text: '1m'
-                }, {
-                    type: 'month',
-                    count: 6,
-                    text: '6m'
-                }, {
-                    type: 'year',
-                    count: 1,
-                    text: '1y'
-                }, {
-                    type: 'all',
-                    text: 'All'
-                }],
-                selected: 3
-            },
-
-            yAxis: {
                 title: {
-                    text: 'Temperature (°C)'
+                    text: 'CPU usage in ESXi, 2014-2015'
+                },
+
+                subtitle: {
+                    text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
+                },
+
+                series: seriesOptions
+            });}
+               $.getJSON('../static/data/' + name + '.json', function (data) {
+            
+               seriesOptions[i] = {
+                    name: name,
+                    data: data.data,
+                    pointStart: data.pointStart,
+                    pointInterval: data.pointInterval,
+                    tooltip: {
+                        valueDecimals: 1,
+                        valueSuffix: '°C'
+                    }
+                };
+                seriesCounter += 1;
+                if (seriesCounter === names.length) {
+                    createChart();
                 }
-            },
-
-            title: {
-                text: 'Hourly temperatures in Vik i Sogn, Norway, 2009-2015'
-            },
-
-            subtitle: {
-                text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
-            },
-
-            series: seriesOptions
-        });}
-           $.getJSON("../static/data/" + name + '.json', function (data) {
-        
-           seriesOptions[i] = {
-                name: name,
-                data: data.data,
-                pointStart: data.pointStart,
-                pointInterval: data.pointInterval,
-                tooltip: {
-                    valueDecimals: 1,
-                    valueSuffix: '°C'
-                }
-            };
-            seriesCounter += 1;
-            if (seriesCounter === names.length) {
-                createChart();
-            }
+            });
         });
     });
-
 });
 
 
-    </script>
+</script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
