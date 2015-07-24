@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -36,7 +35,7 @@
       #UtilTime {color: #fff; background-color: #00bcd4;}
       #Kernel {color: #fff; background-color: #009688;}
       #NonKernel {color: #fff; background-color: #1E88E5;}
-      #KernelState​ {color: #fff; background-color: #673ab7;}
+      #KernelState {color: #fff; background-color: #673ab7;}
       #SwapUsed {color: #fff; background-color: #ff9800;}
       #SwapMBytesRead {color: #fff; background-color: #00bcd4;}
       #SwapMBytesWrite {color: #fff; background-color: #009688;}
@@ -60,19 +59,19 @@
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">CPU<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="javascript:ProcessTime()">ProcessTime</a></li>
-                <li><a href="#UtilTime">Util Time</a></li>                   
+                <li><a href="javascript:UtilTime()">Util Time</a></li>                   
               </ul>
             </li>
             
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">Memory<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="#Kernel">Kernel</a></li>
-                <li><a href="#NonKernel">NonKernel</a></li> 
-                <li><a href="#KernelState​">Kernel State​</a></li>   
-                <li><a href="#SwapUsed">Swap Used</a></li>   
-                <li><a href="#SwapMBytesRead">Swap MBytes Read</a></li>   
-                <li><a href="#SwapMBytesWrite">Swap MBytes Write</a></li>                              
+                <li><a href="javascript:Kernel()">Kernel</a></li>
+                <li><a href="javascript:NonKernel()">NonKernel</a></li> 
+                <li><a href="javascript:KernelState()">Kernel State​</a></li>   
+                <li><a href="javascript:SwapUsed()">Swap Used</a></li>   
+                <li><a href="javascript:SwapMBytesRead()">Swap MBytes Read</a></li>   
+                <li><a href="javascript:SwapMBytesWrite()">Swap MBytes Write</a></li>                              
               </ul>
             </li>
           </ul>
@@ -131,9 +130,9 @@ ProcessTime = function(){
 
     var seriesOptions = [];
     var seriesCounter = 0;
-    $.getJSON('../static/data/cpu.json', function (cpuNames){
+    $.getJSON('../static/data/cpu_process_time.json', function (cpuNames){
         var keys = Object.keys(cpuNames);
-        var names = new Array();
+        var names = [];
 
         for (var i = 0; i < cpuNames[keys].length; i++) {
             names[i] = cpuNames[keys][i];
@@ -204,7 +203,7 @@ ProcessTime = function(){
                 },
 
                 title: {
-                    text: 'CPU usage in ESXi, 2014-2015'
+                    text: 'CPU ProcessTime in ESXi, 2014-2015'
                 },
 
                 subtitle: {
@@ -234,7 +233,719 @@ ProcessTime = function(){
     });
 };
 
+UtilTime = function(){
 
+    var seriesOptions = [];
+    var seriesCounter = 0;
+    $.getJSON('../static/data/cpu_util_time.json', function (cpuNames){
+        var keys = Object.keys(cpuNames);
+        var names = [];
+
+        for (var i = 0; i < cpuNames[keys].length; i++) {
+            names[i] = cpuNames[keys][i];
+        }
+
+        $.each(names, function (i, name) {
+            var start = +new Date();
+               createChart = function(){
+            $('#container').highcharts('StockChart', {
+                chart: {
+                    events: {
+                        load: function () {
+                            if (!window.isComparing) {
+                                this.setTitle(null, {
+                                    text: 'Built chart in ' + (new Date() - start) + 'ms'
+                                });
+                            }
+                        }
+                    },
+                    zoomType: 'x'
+                },
+
+                legend: {
+                    enabled: true,
+                    align: 'right',
+                    backgroundColor: '#FCFFC5',
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    layout: 'vertical',
+                    verticalAlign: 'top',
+                    y: 100,
+                    shadow: true
+                },
+
+                rangeSelector: {
+
+                    buttons: [{
+                        type: 'day',
+                        count: 3,
+                        text: '3d'
+                    }, {
+                        type: 'week',
+                        count: 1,
+                        text: '1week'
+                    }, {
+                        type: 'month',
+                        count: 1,
+                        text: '1m'
+                    }, {
+                        type: 'month',
+                        count: 6,
+                        text: '6m'
+                    }, {
+                        type: 'year',
+                        count: 1,
+                        text: '1y'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }],
+                    selected: 3
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'usage (%)'
+                    }
+                },
+
+                title: {
+                    text: 'CPU UtilTime in ESXi, 2014-2015'
+                },
+
+                subtitle: {
+                    text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
+                },
+
+                series: seriesOptions
+            });}
+               $.getJSON('../static/data/' + name + '.json', function (data) {
+            
+               seriesOptions[i] = {
+                    name: name,
+                    data: data.data,
+                    pointStart: data.pointStart,
+                    pointInterval: data.pointInterval,
+                    tooltip: {
+                        valueDecimals: 1,
+                        valueSuffix: '%'
+                    }
+                };
+                seriesCounter += 1;
+                if (seriesCounter === names.length) {
+                    createChart();
+                }
+            });
+        });
+    });
+};
+
+Kernel = function(){
+
+    var seriesOptions = [];
+    var seriesCounter = 0;
+    var names = ["Kernel"];
+
+    $.each(names, function (i, name) {
+        var start = +new Date();
+        createChart = function(){
+            $('#container').highcharts('StockChart', {
+                chart: {
+                    events: {
+                        load: function () {
+                            if (!window.isComparing) {
+                                this.setTitle(null, {
+                                    text: 'Built chart in ' + (new Date() - start) + 'ms'
+                                });
+                            }
+                        }
+                    },
+                    zoomType: 'x'
+                },
+
+                legend: {
+                    enabled: true,
+                    align: 'right',
+                    backgroundColor: '#FCFFC5',
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    layout: 'vertical',
+                    verticalAlign: 'top',
+                    y: 100,
+                    shadow: true
+                },
+
+                rangeSelector: {
+
+                    buttons: [{
+                        type: 'day',
+                        count: 3,
+                        text: '3d'
+                    }, {
+                        type: 'week',
+                        count: 1,
+                        text: '1week'
+                    }, {
+                        type: 'month',
+                        count: 1,
+                        text: '1m'
+                    }, {
+                        type: 'month',
+                        count: 6,
+                        text: '6m'
+                    }, {
+                        type: 'year',
+                        count: 1,
+                        text: '1y'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }],
+                    selected: 3
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'usage (%)'
+                    }
+                },
+
+                title: {
+                    text: 'Memory Kernel in ESXi, 2014-2015'
+                },
+
+                subtitle: {
+                    text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
+                },
+
+                series: seriesOptions
+            });
+        }
+
+        $.getJSON('../static/data/Memory_Kernel.json', function (data) {
+        
+           seriesOptions[i] = {
+                name: name,
+                data: data.data,
+                pointStart: data.pointStart,
+                pointInterval: data.pointInterval,
+                tooltip: {
+                    valueDecimals: 1,
+                    valueSuffix: '%'
+                }
+            };
+            seriesCounter += 1;
+            if (seriesCounter === names.length) {
+                createChart();
+            }
+        });
+    });
+};
+
+NonKernel = function() {
+
+    var seriesOptions = [];
+    var seriesCounter = 0;
+    var names = ["NonKernel"];
+
+    $.each(names, function (i, name) {
+        var start = +new Date();
+        createChart = function(){
+            $('#container').highcharts('StockChart', {
+                chart: {
+                    events: {
+                        load: function () {
+                            if (!window.isComparing) {
+                                this.setTitle(null, {
+                                    text: 'Built chart in ' + (new Date() - start) + 'ms'
+                                });
+                            }
+                        }
+                    },
+                    zoomType: 'x'
+                },
+
+                legend: {
+                    enabled: true,
+                    align: 'right',
+                    backgroundColor: '#FCFFC5',
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    layout: 'vertical',
+                    verticalAlign: 'top',
+                    y: 100,
+                    shadow: true
+                },
+
+                rangeSelector: {
+
+                    buttons: [{
+                        type: 'day',
+                        count: 3,
+                        text: '3d'
+                    }, {
+                        type: 'week',
+                        count: 1,
+                        text: '1week'
+                    }, {
+                        type: 'month',
+                        count: 1,
+                        text: '1m'
+                    }, {
+                        type: 'month',
+                        count: 6,
+                        text: '6m'
+                    }, {
+                        type: 'year',
+                        count: 1,
+                        text: '1y'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }],
+                    selected: 3
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'usage (%)'
+                    }
+                },
+
+                title: {
+                    text: 'Memory NonKernel in ESXi, 2014-2015'
+                },
+
+                subtitle: {
+                    text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
+                },
+
+                series: seriesOptions
+            });
+        }
+        $.getJSON('../static/data/Memory_NonKernel.json', function (data) {
+        
+           seriesOptions[i] = {
+                name: name,
+                data: data.data,
+                pointStart: data.pointStart,
+                pointInterval: data.pointInterval,
+                tooltip: {
+                    valueDecimals: 1,
+                    valueSuffix: '%'
+                }
+            };
+            seriesCounter += 1;
+            if (seriesCounter === names.length) {
+                createChart();
+            }
+        });
+    });
+};
+
+KernelState = function() {
+    var seriesOptions = [];
+    var seriesCounter = 0;
+    var names = ["KernelState"];
+
+    $.each(names, function (i, name) {
+        var start = +new Date();
+        createChart = function(){
+            $('#container').highcharts('StockChart', {
+                chart: {
+                    events: {
+                        load: function () {
+                            if (!window.isComparing) {
+                                this.setTitle(null, {
+                                    text: 'Built chart in ' + (new Date() - start) + 'ms'
+                                });
+                            }
+                        }
+                    },
+                    zoomType: 'x'
+                },
+
+                legend: {
+                    enabled: true,
+                    align: 'right',
+                    backgroundColor: '#FCFFC5',
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    layout: 'vertical',
+                    verticalAlign: 'top',
+                    y: 100,
+                    shadow: true
+                },
+
+                rangeSelector: {
+
+                    buttons: [{
+                        type: 'day',
+                        count: 3,
+                        text: '3d'
+                    }, {
+                        type: 'week',
+                        count: 1,
+                        text: '1week'
+                    }, {
+                        type: 'month',
+                        count: 1,
+                        text: '1m'
+                    }, {
+                        type: 'month',
+                        count: 6,
+                        text: '6m'
+                    }, {
+                        type: 'year',
+                        count: 1,
+                        text: '1y'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }],
+                    selected: 3
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'usage (%)'
+                    }
+                },
+
+                title: {
+                    text: 'Memory KernelState in ESXi, 2014-2015'
+                },
+
+                subtitle: {
+                    text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
+                },
+
+                series: seriesOptions
+            });
+        }
+        $.getJSON('../static/data/Memory_KernelState.json', function (data) {
+        
+           seriesOptions[i] = {
+                name: name,
+                data: data.data,
+                pointStart: data.pointStart,
+                pointInterval: data.pointInterval,
+                tooltip: {
+                    valueDecimals: 1,
+                    valueSuffix: '%'
+                }
+            };
+            seriesCounter += 1;
+            if (seriesCounter === names.length) {
+                createChart();
+            }
+        });
+    });
+};
+
+SwapUsed = function(){
+
+    var seriesOptions = [];
+    var seriesCounter = 0;
+    var names = ["SwapUsed"];
+
+    $.each(names, function (i, name) {
+        var start = +new Date();
+        createChart = function(){
+            $('#container').highcharts('StockChart', {
+                chart: {
+                    events: {
+                        load: function () {
+                            if (!window.isComparing) {
+                                this.setTitle(null, {
+                                    text: 'Built chart in ' + (new Date() - start) + 'ms'
+                                });
+                            }
+                        }
+                    },
+                    zoomType: 'x'
+                },
+
+                legend: {
+                    enabled: true,
+                    align: 'right',
+                    backgroundColor: '#FCFFC5',
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    layout: 'vertical',
+                    verticalAlign: 'top',
+                    y: 100,
+                    shadow: true
+                },
+
+                rangeSelector: {
+
+                    buttons: [{
+                        type: 'day',
+                        count: 3,
+                        text: '3d'
+                    }, {
+                        type: 'week',
+                        count: 1,
+                        text: '1week'
+                    }, {
+                        type: 'month',
+                        count: 1,
+                        text: '1m'
+                    }, {
+                        type: 'month',
+                        count: 6,
+                        text: '6m'
+                    }, {
+                        type: 'year',
+                        count: 1,
+                        text: '1y'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }],
+                    selected: 3
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'usage (%)'
+                    }
+                },
+
+                title: {
+                    text: 'Memory SwapUsed in ESXi, 2014-2015'
+                },
+
+                subtitle: {
+                    text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
+                },
+
+                series: seriesOptions
+            });
+        }
+        $.getJSON('../static/data/Memory_SwapUsed.json', function (data) {
+        
+           seriesOptions[i] = {
+                name: name,
+                data: data.data,
+                pointStart: data.pointStart,
+                pointInterval: data.pointInterval,
+                tooltip: {
+                    valueDecimals: 1,
+                    valueSuffix: '%'
+                }
+            };
+            seriesCounter += 1;
+            if (seriesCounter === names.length) {
+                createChart();
+            }
+        });
+    });
+};
+
+SwapMBytesRead = function(){
+
+    var seriesOptions = [];
+    var seriesCounter = 0;
+    var names = ["SwapMBytesRead"];
+
+    $.each(names, function (i, name) {
+        var start = +new Date();
+        createChart = function(){
+            $('#container').highcharts('StockChart', {
+                chart: {
+                    events: {
+                        load: function () {
+                            if (!window.isComparing) {
+                                this.setTitle(null, {
+                                    text: 'Built chart in ' + (new Date() - start) + 'ms'
+                                });
+                            }
+                        }
+                    },
+                    zoomType: 'x'
+                },
+
+                legend: {
+                    enabled: true,
+                    align: 'right',
+                    backgroundColor: '#FCFFC5',
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    layout: 'vertical',
+                    verticalAlign: 'top',
+                    y: 100,
+                    shadow: true
+                },
+
+                rangeSelector: {
+
+                    buttons: [{
+                        type: 'day',
+                        count: 3,
+                        text: '3d'
+                    }, {
+                        type: 'week',
+                        count: 1,
+                        text: '1week'
+                    }, {
+                        type: 'month',
+                        count: 1,
+                        text: '1m'
+                    }, {
+                        type: 'month',
+                        count: 6,
+                        text: '6m'
+                    }, {
+                        type: 'year',
+                        count: 1,
+                        text: '1y'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }],
+                    selected: 3
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'usage (%)'
+                    }
+                },
+
+                title: {
+                    text: 'Memory SwapMBytesRead in ESXi, 2014-2015'
+                },
+
+                subtitle: {
+                    text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
+                },
+
+                series: seriesOptions
+            });
+        }
+        $.getJSON('../static/data/Memory_SwapMBytesRead.json', function (data) {
+        
+           seriesOptions[i] = {
+                name: name,
+                data: data.data,
+                pointStart: data.pointStart,
+                pointInterval: data.pointInterval,
+                tooltip: {
+                    valueDecimals: 1,
+                    valueSuffix: '%'
+                }
+            };
+            seriesCounter += 1;
+            if (seriesCounter === names.length) {
+                createChart();
+            }
+        });
+    });
+};
+
+SwapMBytesWrite = function(){
+
+    var seriesOptions = [];
+    var seriesCounter = 0;
+    var names = ["SwapMBytesWrite"];
+
+    $.each(names, function (i, name) {
+        var start = +new Date();
+        createChart = function(){
+            $('#container').highcharts('StockChart', {
+                chart: {
+                    events: {
+                        load: function () {
+                            if (!window.isComparing) {
+                                this.setTitle(null, {
+                                    text: 'Built chart in ' + (new Date() - start) + 'ms'
+                                });
+                            }
+                        }
+                    },
+                    zoomType: 'x'
+                },
+
+                legend: {
+                    enabled: true,
+                    align: 'right',
+                    backgroundColor: '#FCFFC5',
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    layout: 'vertical',
+                    verticalAlign: 'top',
+                    y: 100,
+                    shadow: true
+                },
+
+                rangeSelector: {
+
+                    buttons: [{
+                        type: 'day',
+                        count: 3,
+                        text: '3d'
+                    }, {
+                        type: 'week',
+                        count: 1,
+                        text: '1week'
+                    }, {
+                        type: 'month',
+                        count: 1,
+                        text: '1m'
+                    }, {
+                        type: 'month',
+                        count: 6,
+                        text: '6m'
+                    }, {
+                        type: 'year',
+                        count: 1,
+                        text: '1y'
+                    }, {
+                        type: 'all',
+                        text: 'All'
+                    }],
+                    selected: 3
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'usage (%)'
+                    }
+                },
+
+                title: {
+                    text: 'Memory Kernel in ESXi, 2014-2015'
+                },
+
+                subtitle: {
+                    text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
+                },
+
+                series: seriesOptions
+            });
+        }
+
+        $.getJSON('../static/data/Memory_SwapMBytesWrite.json', function (data) {
+        
+           seriesOptions[i] = {
+                name: name,
+                data: data.data,
+                pointStart: data.pointStart,
+                pointInterval: data.pointInterval,
+                tooltip: {
+                    valueDecimals: 1,
+                    valueSuffix: '%'
+                }
+            };
+            seriesCounter += 1;
+            if (seriesCounter === names.length) {
+                createChart();
+            }
+        });
+    });
+};
 </script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
