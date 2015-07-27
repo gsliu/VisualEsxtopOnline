@@ -422,7 +422,7 @@ Kernel = function(){
             });
         }
 
-        $.getJSON('../static/data/Memory_Kernel.json', function (data) {
+        $.getJSON('../static/data/memory_kernel_mbytes.json', function (data) {
         
            seriesOptions[i] = {
                 name: name,
@@ -523,7 +523,7 @@ NonKernel = function() {
                 series: seriesOptions
             });
         }
-        $.getJSON('../static/data/Memory_NonKernel.json', function (data) {
+        $.getJSON('../static/data/memory_nonkernel_mbytes.json', function (data) {
         
            seriesOptions[i] = {
                 name: name,
@@ -623,7 +623,7 @@ KernelState = function() {
                 series: seriesOptions
             });
         }
-        $.getJSON('../static/data/Memory_KernelState.json', function (data) {
+        $.getJSON('../static/data/memory_kernel_state.json', function (data) {
         
            seriesOptions[i] = {
                 name: name,
@@ -825,7 +825,7 @@ SwapMBytesRead = function(){
                 series: seriesOptions
             });
         }
-        $.getJSON('../static/data/Memory_SwapMBytesRead.json', function (data) {
+        $.getJSON('../static/data/memory_swap_mbytes_read.json', function (data) {
         
            seriesOptions[i] = {
                 name: name,
@@ -927,7 +927,7 @@ SwapMBytesWrite = function(){
             });
         }
 
-        $.getJSON('../static/data/Memory_SwapMBytesWrite.json', function (data) {
+        $.getJSON('../static/data/memory_swap_mbytes_write.json', function (data) {
         
            seriesOptions[i] = {
                 name: name,

@@ -82,7 +82,7 @@ def parseHeader(header):
         elif helper.is_memory_kernel_state(item):
             result['memory']['kernel_state'] = header.index(item)
         elif helper.is_memory_pshare_shared_mbytes(item):
-            result['memory']['shared_mbytes'] = header.index(item)
+            result['memory']['pshare_shared_mbytes'] = header.index(item)
         elif helper.is_memory_swap_target_mbytes(item):
             result['memory']['swap_target_mbytes'] = header.index(item)
         elif helper.is_memory_swap_mbytes_read_sec(item):
@@ -118,7 +118,6 @@ def init_cpu_result(result, index):
 def init_memory_result(result, index, catergory):
     timeStr = '2013-10-10 22:42:26'
     stamp = timestr2stamp(timeStr)
-    result['memory'] = dict()
     result['memory'][catergory] = dict()
     result['memory'][catergory]['pointInterval'] = 5000
     result['memory'][catergory]['pointStart'] = stamp
@@ -138,6 +137,7 @@ memory_catergory = (
 
 
 def init_memory(result, index):
+    result['memory'] = dict()
     for catergory in memory_catergory:
         init_memory_result(result, index, catergory)
 
@@ -163,7 +163,7 @@ def create_cpu_util_time(row, index, result):
 
 def create_memory_status(row, index, result, catergory):
     memory_index = index['memory'][catergory]
-    result['memory'][catergory]['data'].append(row[memory_index])
+    result['memory'][catergory]['data'].append(float(row[memory_index]))
 
 
 def create_memory(row, index, result):
@@ -186,9 +186,10 @@ def load_cpu_file(data, catergory, index):
 
 def load_memory_file(result):
     for catergory in memory_catergory:
+        result['memory'][catergory]['dataLength'] = len(result['memory'][catergory]['data'])
         filename = "static/data/memory_" + catergory + ".json"
         with open(filename, 'w') as f:
-            json.dump(result['memory'][catergory])
+            json.dump(result['memory'][catergory], f)
 
 def csv2jsonHC(filename):
     result = dict()
