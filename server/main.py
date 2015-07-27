@@ -5,6 +5,7 @@ import csv
 import json
 import time
 import helper
+import requests
 # configuration
 DEBUG = True
 
@@ -211,6 +212,14 @@ def csv2jsonHC(filename):
     load_memory_file(result)
 
 
+def get_node_rule():
+    url = 'http://127.0.0.1:5000/noderule'
+    # url = 'https://github.com/timeline.json'
+    response = requests.get(url)
+    json_re = json.dumps(response.content)
+    return json_re
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -225,9 +234,11 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/esxtop')
+@app.route('/esxtop/')
 def esxtop():
-    return render_template('start.html')
+    node_rule = get_node_rule()
+    return render_template('start.html', noderule=node_rule)
+
 
 if __name__ == '__main__':
     app.run(port=5001)
