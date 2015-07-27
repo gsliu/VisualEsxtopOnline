@@ -184,12 +184,15 @@ def load_cpu_file(data, catergory, index):
     with open("static/data/" + index_file_name + ".json", 'w') as f:
         json.dump(index_file_content, f)
 
+
 def load_memory_file(result):
     for catergory in memory_catergory:
-        result['memory'][catergory]['dataLength'] = len(result['memory'][catergory]['data'])
+        result['memory'][catergory]['dataLength'] = len(
+            result['memory'][catergory]['data'])
         filename = "static/data/memory_" + catergory + ".json"
         with open(filename, 'w') as f:
             json.dump(result['memory'][catergory], f)
+
 
 def csv2jsonHC(filename):
     result = dict()
@@ -218,9 +221,6 @@ def index():
             saved_file = 'upload/' + tid + '/' + filename
             file.save(saved_file)
             csv2jsonHC(saved_file)
-            # reportdirname = create_report_dir(tid)
-            # analyze_data(saved_file, 'report/' + tid + '/')
-            # add_new_task(tid)
             return redirect(url_for('esxtop'))
     return render_template('index.html')
 
