@@ -1,21 +1,27 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, send_from_directory
 from werkzeug import secure_filename
 import os
 import csv
 import json
 import time
 import helper
+import shutil
 import requests
+
 # configuration
 DEBUG = True
 
 UPLOAD_FOLDER = 'upload'
-ALLOWED_EXTENSIONS = set(
-    ['csv'])
+ALLOWED_EXTENSIONS = set(['csv'])
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+tasks = []
 
+class Task:
+    def __init__(self):
+        pass
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -33,11 +39,37 @@ def create_task_dir():
 
 # Time Format : 2013-10-10 23:40:22
 
+def get_all_tasks():
+    upload_dirs = sorted(os.listdir('upload'))
+    for tid in upload_dirs:
+        add_new_task(tid)
+    return tasks
+
+def add_new_task(tid):
+    global tasks
+    task = Task()
+    task.tid = tid
+    fs = os.listdir('upload/' + tid)
+    if len(fs) == 1:
+        task.filename = fs[0]
+    if os.path.exists('upload/' + tid):
+        task.status = 'success'
+    else:
+        task.status = 'failure'
+    tasks = [task] + list(tasks)
 
 def timestr2stamp(timeStr):
     timeArray = time.strptime(timeStr, "%Y-%m-%d %H:%M:%S")
     timeStamp = int(time.mktime(timeArray))
     return timeStamp
+
+def delete_task(tid):
+    for t in tasks:
+        if t.tid == tid:
+            tasks.remove(t)
+    return tasks;
+
+
 
 
 def str2dict(row):
@@ -58,7 +90,7 @@ def csv2json(filename):
         headers = f_csv.next()
         for row in f_csv:
             result.append(str2dict(row))
-    print len(result)
+#    print len(result)
     with open("test.json", 'w') as f:
         json.dump(result, f)
 
@@ -188,8 +220,7 @@ def load_cpu_file(data, catergory, index):
 
 def load_memory_file(result):
     for catergory in memory_catergory:
-        result['memory'][catergory]['dataLength'] = len(
-            result['memory'][catergory]['data'])
+        result['memory'][catergory]['dataLength'] = len(result['memory'][catergory]['data'])
         filename = "static/data/memory_" + catergory + ".json"
         with open(filename, 'w') as f:
             json.dump(result['memory'][catergory], f)
@@ -230,15 +261,42 @@ def index():
             saved_file = 'upload/' + tid + '/' + filename
             file.save(saved_file)
             csv2jsonHC(saved_file)
-            return redirect(url_for('esxtop'))
-    return render_template('index.html')
+            add_new_task(tid)
+            return redirect('esxtop')
+    return render_template('index.html',tasks=tasks)
 
+@app.route('/upload/<path:path>')
+def uploaded_file(path):
+    return send_from_directory('upload', path)
 
-@app.route('/esxtop/')
+@app.route('/esxtop')
 def esxtop():
     node_rule = get_node_rule()
     return render_template('start.html', noderule=node_rule)
+	
+@app.route('/report', methods=['GET', 'POST'])
+def report():
+    if request.method == 'GET':
+        path = request.values['path']
+        filename = request.values['filename']
+        if path:
+            saved_file = 'upload/' + path + '/' + filename
+            csv2jsonHC(saved_file)
+            return redirect('/esxtop')
+    return render_template('index.html',tasks=tasks)
+
+@app.route('/delete', methods=['GET', 'POST'])
+def delete():
+    if request.method == 'GET':
+        path = request.values['path']
+        if path:
+            saved_path = 'upload/' + path
+            tasks=delete_task(path)
+            shutil.rmtree(saved_path)
+            return redirect('/')
+    return render_template('index.html',tasks=tasks)
 
 
 if __name__ == '__main__':
+    tasks = get_all_tasks()
     app.run(port=5001)
