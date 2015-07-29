@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="../static/css/docs.min.css">
     <style type="text/css">
 ${demo.css}
+td{
+
+    width: 200px;
+    text-align: left;
+}
     </style>
 </head>
 
@@ -90,7 +95,14 @@ ${demo.css}
                             <br>
                             <div id="section-2-6" style="width:100%; height:400px;">
                                 <h3>Swap MBytes Write</h3>
-                                <div id="swqpmbwrite"></div>
+                                <div id="swapmbwrite"></div>
+                            </div>
+                        </div>
+                        <div class="bs-docs-section">
+                            <h1 id="section-3">Warning</h1>
+                            <div id="section-3-1">
+                                <h3>Warning</h3>
+                                <div id="myTable"></div>
                             </div>
                         </div>
                     </div>
@@ -123,6 +135,12 @@ ${demo.css}
                                         <li><a href="#section-2-6">Swap MBytes Write</a></li>
                                     </ul>
                                 </li>
+                                <li>
+                                    <a href="#section-3">Warning</a>
+                                    <ul class="nav">
+                                        <li><a href="#section-3-1">warning</a></li>
+                                    </ul>
+                                </li>
 
 
 
@@ -136,6 +154,11 @@ ${demo.css}
             </div><!--tab datas-->
         <!--div></div--><!--tab content-->
     </div>
+    <!--div class="container1">
+        <div class="col-sm-12">
+            <div id="myTable" style="width:100%; height:400px;"></div>
+        </div>
+    </div-->
     <div><p style="text-align: center; margin-top: 20px;">CPD, VMWare Inc. 2014</p></div>
 <script language="JavaScript">
 
@@ -155,12 +178,8 @@ ${demo.css}
                     plotBorderWidth: 1
                 }
             });
-            var seriesOptions1 = [];
-            var seriesCounter1 = 0;
-            var seriesOptions2 = [];
-            var seriesCounter2 = 0;
-           createChart1 = function(start){
-            $('#processtime').highcharts('StockChart', {
+           createChart = function(id,start,seriesOptions,titlename){
+            $(id).highcharts('StockChart', {
                           chart: {
                             events: {
                                 load: function () {
@@ -222,18 +241,22 @@ ${demo.css}
                         },
 
                         title: {
-                            text: 'CPU ProcessTime in ESXi, 2014-2015'
+                            text: titlename
                         },
 
                         subtitle: {
                             text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
                         },
 
-                        series : seriesOptions1
+                        series : seriesOptions
                       });}
               $.getJSON('../static/data/cpu_process_time.json', function (cpuNames){
                 var keys = Object.keys(cpuNames);
                 var names = [];
+                var id = '#processtime';
+                var seriesOptions = [];
+                var seriesCounter = 0;
+                var titlename = 'CPU ProcessTime in ESXi, 2014-2015';
 
                 for (var i = 0; i < cpuNames[keys].length; i++) {
                     names[i] = cpuNames[keys][i];
@@ -243,7 +266,7 @@ ${demo.css}
                   var start = +new Date();
                   $.getJSON('../static/data/' + name + '.json', function (data) {
                     
-                       seriesOptions1[i] = {
+                       seriesOptions[i] = {
                             name: name,
                             data: data.data,
                             pointStart: data.pointStart,
@@ -253,88 +276,21 @@ ${demo.css}
                                 valueSuffix: '%'
                             }
                         };
-                        seriesCounter1 += 1;
-                        if (seriesCounter1 === names.length) {
-                            createChart1(start);
+                        seriesCounter += 1;
+                        if (seriesCounter === names.length) {
+                            createChart(id,start,seriesOptions,titlename);
                         }
                     });
                 });
             });
-            createChart2 = function(start){
-            $('#utiltime').highcharts('StockChart', {
-                          chart: {
-                            events: {
-                                load: function () {
-                                    if (!window.isComparing) {
-                                        this.setTitle(null, {
-                                            text: 'Built chart in ' + (new Date() - start) + 'ms'
-                                        });
-                                    }
-                                }
-                            },
-                            zoomType: 'x'
-                        },
-
-                        legend: {
-                            enabled: true,
-                            align: 'right',
-                            backgroundColor: '#FCFFC5',
-                            borderColor: 'black',
-                            borderWidth: 2,
-                            layout: 'vertical',
-                            verticalAlign: 'top',
-                            y: 100,
-                            shadow: true
-                        },
-
-                        rangeSelector: {
-
-                            buttons: [{
-                                type: 'day',
-                                count: 3,
-                                text: '3d'
-                            }, {
-                                type: 'week',
-                                count: 1,
-                                text: '1week'
-                            }, {
-                                type: 'month',
-                                count: 1,
-                                text: '1m'
-                            }, {
-                                type: 'month',
-                                count: 6,
-                                text: '6m'
-                            }, {
-                                type: 'year',
-                                count: 1,
-                                text: '1y'
-                            }, {
-                                type: 'all',
-                                text: 'All'
-                            }],
-                            selected: 3
-                        },
-
-                        yAxis: {
-                            title: {
-                                text: 'usage (%)'
-                            }
-                        },
-
-                        title: {
-                            text: 'CPU UtilTime in ESXi, 2014-2015'
-                        },
-
-                        subtitle: {
-                            text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
-                        },
-
-                        series : seriesOptions2
-                      });}
+            
               $.getJSON('../static/data/cpu_util_time.json', function (cpuNames){
                 var keys = Object.keys(cpuNames);
                 var names = [];
+                var id = '#utiltime';
+                var seriesOptions = [];
+                var seriesCounter = 0;
+                var titlename = 'CPU UtilTime in ESXi, 2014-2015';
 
                 for (var i = 0; i < cpuNames[keys].length; i++) {
                     names[i] = cpuNames[keys][i];
@@ -344,7 +300,7 @@ ${demo.css}
                   var start = +new Date();
                   $.getJSON('../static/data/' + name + '.json', function (data) {
                     
-                       seriesOptions2[i] = {
+                       seriesOptions[i] = {
                             name: name,
                             data: data.data,
                             pointStart: data.pointStart,
@@ -354,92 +310,22 @@ ${demo.css}
                                 valueSuffix: '%'
                             }
                         };
-                        seriesCounter2 += 1;
-                        if (seriesCounter2 === names.length) {
-                            createChart2(start);
+                        seriesCounter += 1;
+                        if (seriesCounter === names.length) {
+                            createChart(id,start,seriesOptions,titlename);
                         }
                     });
                 });
             });
-            var seriesOptions3 = [];
-            var seriesCounter3 = 0;
-            createChart3 = function(start){
-                $('#kernel').highcharts('StockChart', {
-                          chart: {
-                            events: {
-                                load: function () {
-                                    if (!window.isComparing) {
-                                        this.setTitle(null, {
-                                            text: 'Built chart in ' + (new Date() - start) + 'ms'
-                                        });
-                                    }
-                                }
-                            },
-                            zoomType: 'x'
-                        },
-
-                        legend: {
-                            enabled: true,
-                            align: 'right',
-                            backgroundColor: '#FCFFC5',
-                            borderColor: 'black',
-                            borderWidth: 2,
-                            layout: 'vertical',
-                            verticalAlign: 'top',
-                            y: 100,
-                            shadow: true
-                        },
-
-                        rangeSelector: {
-
-                            buttons: [{
-                                type: 'day',
-                                count: 3,
-                                text: '3d'
-                            }, {
-                                type: 'week',
-                                count: 1,
-                                text: '1week'
-                            }, {
-                                type: 'month',
-                                count: 1,
-                                text: '1m'
-                            }, {
-                                type: 'month',
-                                count: 6,
-                                text: '6m'
-                            }, {
-                                type: 'year',
-                                count: 1,
-                                text: '1y'
-                            }, {
-                                type: 'all',
-                                text: 'All'
-                            }],
-                            selected: 3
-                        },
-
-                        yAxis: {
-                            title: {
-                                text: 'usage (%)'
-                            }
-                        },
-
-                        title: {
-                            text: 'CPU Kernel in ESXi, 2014-2015'
-                        },
-
-                        subtitle: {
-                            text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
-                        },
-
-                        series : seriesOptions3
-                      });}
                 var names = ['Kernel'];
                 $.each(names, function (i, name) {
                     var start = +new Date();
+                    var id = '#kernel';
+                    var seriesOptions = [];
+                    var seriesCounter = 0;
+                    var titlename = 'CPU KernelMemory in ESXi, 2014-2015';
                     $.getJSON('../static/data/memory_kernel_mbytes.json', function (data) {
-                   seriesOptions3[i] = {
+                   seriesOptions[i] = {
                         name: name,
                         data: data.data,
                         pointStart: data.pointStart,
@@ -449,91 +335,22 @@ ${demo.css}
                             valueSuffix: '%'
                         }
                     };
-                    seriesCounter3 += 1;
-                    if (seriesCounter3 === names.length) {
-                        createChart3(start);
+                    seriesCounter += 1;
+                    if (seriesCounter === names.length) {
+                        createChart(id,start,seriesOptions,titlename);
                     }
                 });
                 });
-                var seriesOptions4 = [];
-                var seriesCounter4 = 0;
-                createChart4 = function(start){
-                    $('#nonkernel').highcharts('StockChart', {
-                              chart: {
-                                events: {
-                                    load: function () {
-                                        if (!window.isComparing) {
-                                            this.setTitle(null, {
-                                                text: 'Built chart in ' + (new Date() - start) + 'ms'
-                                            });
-                                        }
-                                    }
-                                },
-                                zoomType: 'x'
-                            },
-
-                            legend: {
-                                enabled: true,
-                                align: 'right',
-                                backgroundColor: '#FCFFC5',
-                                borderColor: 'black',
-                                borderWidth: 2,
-                                layout: 'vertical',
-                                verticalAlign: 'top',
-                                y: 100,
-                                shadow: true
-                            },
-
-                            rangeSelector: {
-
-                                buttons: [{
-                                    type: 'day',
-                                    count: 3,
-                                    text: '3d'
-                                }, {
-                                    type: 'week',
-                                    count: 1,
-                                    text: '1week'
-                                }, {
-                                    type: 'month',
-                                    count: 1,
-                                    text: '1m'
-                                }, {
-                                    type: 'month',
-                                    count: 6,
-                                    text: '6m'
-                                }, {
-                                    type: 'year',
-                                    count: 1,
-                                    text: '1y'
-                                }, {
-                                    type: 'all',
-                                    text: 'All'
-                                }],
-                                selected: 3
-                            },
-
-                            yAxis: {
-                                title: {
-                                    text: 'usage (%)'
-                                }
-                            },
-
-                            title: {
-                                text: 'CPU Kernel in ESXi, 2014-2015'
-                            },
-
-                            subtitle: {
-                                text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
-                            },
-
-                            series : seriesOptions4
-                          });}
+                
                     var names = ['NonKernel'];
                     $.each(names, function (i, name) {
                         var start = +new Date();
+                        var id = '#nonkernel';
+                        var seriesOptions = [];
+                        var seriesCounter = 0;
+                        var titlename = 'CPU NonkernelMemory in ESXi, 2014-2015';
                         $.getJSON('../static/data/memory_nonkernel_mbytes.json', function (data) {
-                       seriesOptions4[i] = {
+                       seriesOptions[i] = {
                             name: name,
                             data: data.data,
                             pointStart: data.pointStart,
@@ -543,91 +360,22 @@ ${demo.css}
                                 valueSuffix: '%'
                             }
                         };
-                        seriesCounter4 += 1;
-                        if (seriesCounter4 === names.length) {
-                            createChart4(start);
+                        seriesCounter += 1;
+                        if (seriesCounter === names.length) {
+                            createChart(id,start,seriesOptions,titlename);
                         }
                     });
                     });
-                    var seriesOptions5 = [];
-                    var seriesCounter5 = 0;
-                    createChart5 = function(start){
-                        $('#kernelstate').highcharts('StockChart', {
-                                  chart: {
-                                    events: {
-                                        load: function () {
-                                            if (!window.isComparing) {
-                                                this.setTitle(null, {
-                                                    text: 'Built chart in ' + (new Date() - start) + 'ms'
-                                                });
-                                            }
-                                        }
-                                    },
-                                    zoomType: 'x'
-                                },
-
-                                legend: {
-                                    enabled: true,
-                                    align: 'right',
-                                    backgroundColor: '#FCFFC5',
-                                    borderColor: 'black',
-                                    borderWidth: 2,
-                                    layout: 'vertical',
-                                    verticalAlign: 'top',
-                                    y: 100,
-                                    shadow: true
-                                },
-
-                                rangeSelector: {
-
-                                    buttons: [{
-                                        type: 'day',
-                                        count: 3,
-                                        text: '3d'
-                                    }, {
-                                        type: 'week',
-                                        count: 1,
-                                        text: '1week'
-                                    }, {
-                                        type: 'month',
-                                        count: 1,
-                                        text: '1m'
-                                    }, {
-                                        type: 'month',
-                                        count: 6,
-                                        text: '6m'
-                                    }, {
-                                        type: 'year',
-                                        count: 1,
-                                        text: '1y'
-                                    }, {
-                                        type: 'all',
-                                        text: 'All'
-                                    }],
-                                    selected: 3
-                                },
-
-                                yAxis: {
-                                    title: {
-                                        text: 'usage (%)'
-                                    }
-                                },
-
-                                title: {
-                                    text: 'CPU Kernel in ESXi, 2014-2015'
-                                },
-
-                                subtitle: {
-                                    text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
-                                },
-
-                                series : seriesOptions5
-                              });}
-                        var names = ['NonKernel'];
+                    
+                        var names = ['KernelState'];
                         $.each(names, function (i, name) {
                             var start = +new Date();
+                            var id = '#kernelstate';
+                            var seriesOptions = [];
+                            var seriesCounter = 0;
+                            var titlename = 'CPU KernelState in ESXi, 2014-2015';
                             $.getJSON('../static/data/memory_kernel_state.json', function (data) {
-                           seriesOptions5[i] = {
+                           seriesOptions[i] = {
                                 name: name,
                                 data: data.data,
                                 pointStart: data.pointStart,
@@ -637,91 +385,22 @@ ${demo.css}
                                     valueSuffix: '%'
                                 }
                             };
-                            seriesCounter5 += 1;
-                            if (seriesCounter5 === names.length) {
-                                createChart5(start);
+                            seriesCounter += 1;
+                            if (seriesCounter === names.length) {
+                                createChart(id,start,seriesOptions,titlename);
                             }
                         });
                         });
-                        var seriesOptions6 = [];
-                        var seriesCounter6 = 0;
-                        createChart6 = function(start){
-                            $('#swapused').highcharts('StockChart', {
-                                      chart: {
-                                        events: {
-                                            load: function () {
-                                                if (!window.isComparing) {
-                                                    this.setTitle(null, {
-                                                        text: 'Built chart in ' + (new Date() - start) + 'ms'
-                                                    });
-                                                }
-                                            }
-                                        },
-                                        zoomType: 'x'
-                                    },
-
-                                    legend: {
-                                        enabled: true,
-                                        align: 'right',
-                                        backgroundColor: '#FCFFC5',
-                                        borderColor: 'black',
-                                        borderWidth: 2,
-                                        layout: 'vertical',
-                                        verticalAlign: 'top',
-                                        y: 100,
-                                        shadow: true
-                                    },
-
-                                    rangeSelector: {
-
-                                        buttons: [{
-                                            type: 'day',
-                                            count: 3,
-                                            text: '3d'
-                                        }, {
-                                            type: 'week',
-                                            count: 1,
-                                            text: '1week'
-                                        }, {
-                                            type: 'month',
-                                            count: 1,
-                                            text: '1m'
-                                        }, {
-                                            type: 'month',
-                                            count: 6,
-                                            text: '6m'
-                                        }, {
-                                            type: 'year',
-                                            count: 1,
-                                            text: '1y'
-                                        }, {
-                                            type: 'all',
-                                            text: 'All'
-                                        }],
-                                        selected: 3
-                                    },
-
-                                    yAxis: {
-                                        title: {
-                                            text: 'usage (%)'
-                                        }
-                                    },
-
-                                    title: {
-                                        text: 'CPU Kernel in ESXi, 2014-2015'
-                                    },
-
-                                    subtitle: {
-                                        text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
-                                    },
-
-                                    series : seriesOptions6
-                                  });}
+                        
                             var names = ['SwapUsed'];
                             $.each(names, function (i, name) {
                                 var start = +new Date();
+                                var id = '#swapused';
+                                var seriesOptions = [];
+                                var seriesCounter = 0;
+                                var titlename = 'CPU Swap Used in ESXi, 2014-2015';
                                 $.getJSON('../static/data/memory_pshare_shared_mbytes.json', function (data) {
-                               seriesOptions6[i] = {
+                               seriesOptions[i] = {
                                     name: name,
                                     data: data.data,
                                     pointStart: data.pointStart,
@@ -731,91 +410,22 @@ ${demo.css}
                                         valueSuffix: '%'
                                     }
                                 };
-                                seriesCounter6 += 1;
-                                if (seriesCounter6 === names.length) {
-                                    createChart6(start);
+                                seriesCounter += 1;
+                                if (seriesCounter === names.length) {
+                                    createChart(id,start,seriesOptions,titlename);
                                 }
                             });
                             });
-                        var seriesOptions7 = [];
-                        var seriesCounter7 = 0;
-                        createChart7 = function(start){
-                            $('#swapmbread').highcharts('StockChart', {
-                                      chart: {
-                                        events: {
-                                            load: function () {
-                                                if (!window.isComparing) {
-                                                    this.setTitle(null, {
-                                                        text: 'Built chart in ' + (new Date() - start) + 'ms'
-                                                    });
-                                                }
-                                            }
-                                        },
-                                        zoomType: 'x'
-                                    },
-
-                                    legend: {
-                                        enabled: true,
-                                        align: 'right',
-                                        backgroundColor: '#FCFFC5',
-                                        borderColor: 'black',
-                                        borderWidth: 2,
-                                        layout: 'vertical',
-                                        verticalAlign: 'top',
-                                        y: 100,
-                                        shadow: true
-                                    },
-
-                                    rangeSelector: {
-
-                                        buttons: [{
-                                            type: 'day',
-                                            count: 3,
-                                            text: '3d'
-                                        }, {
-                                            type: 'week',
-                                            count: 1,
-                                            text: '1week'
-                                        }, {
-                                            type: 'month',
-                                            count: 1,
-                                            text: '1m'
-                                        }, {
-                                            type: 'month',
-                                            count: 6,
-                                            text: '6m'
-                                        }, {
-                                            type: 'year',
-                                            count: 1,
-                                            text: '1y'
-                                        }, {
-                                            type: 'all',
-                                            text: 'All'
-                                        }],
-                                        selected: 3
-                                    },
-
-                                    yAxis: {
-                                        title: {
-                                            text: 'usage (%)'
-                                        }
-                                    },
-
-                                    title: {
-                                        text: 'CPU Kernel in ESXi, 2014-2015'
-                                    },
-
-                                    subtitle: {
-                                        text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
-                                    },
-
-                                    series : seriesOptions7
-                                  });}
+                        
                             var names = ['SwapMBytesRead'];
                             $.each(names, function (i, name) {
                                 var start = +new Date();
+                                var id = '#swapmbread';
+                                var seriesOptions = [];
+                                var seriesCounter = 0;
+                                var titlename = 'CPU Swap Read in ESXi, 2014-2015';
                                 $.getJSON('../static/data/memory_swap_mbytes_read.json', function (data) {
-                               seriesOptions7[i] = {
+                               seriesOptions[i] = {
                                     name: name,
                                     data: data.data,
                                     pointStart: data.pointStart,
@@ -825,91 +435,22 @@ ${demo.css}
                                         valueSuffix: '%'
                                     }
                                 };
-                                seriesCounter7 += 1;
-                                if (seriesCounter7 === names.length) {
-                                    createChart7(start);
+                                seriesCounter += 1;
+                                if (seriesCounter === names.length) {
+                                    createChart(id,start,seriesOptions,titlename);
                                 }
                             });
                             });
-                        var seriesOptions8 = [];
-                        var seriesCounter8 = 0;
-                        createChart8 = function(start){
-                            $('#swqpmbwrite').highcharts('StockChart', {
-                                      chart: {
-                                        events: {
-                                            load: function () {
-                                                if (!window.isComparing) {
-                                                    this.setTitle(null, {
-                                                        text: 'Built chart in ' + (new Date() - start) + 'ms'
-                                                    });
-                                                }
-                                            }
-                                        },
-                                        zoomType: 'x'
-                                    },
-
-                                    legend: {
-                                        enabled: true,
-                                        align: 'right',
-                                        backgroundColor: '#FCFFC5',
-                                        borderColor: 'black',
-                                        borderWidth: 2,
-                                        layout: 'vertical',
-                                        verticalAlign: 'top',
-                                        y: 100,
-                                        shadow: true
-                                    },
-
-                                    rangeSelector: {
-
-                                        buttons: [{
-                                            type: 'day',
-                                            count: 3,
-                                            text: '3d'
-                                        }, {
-                                            type: 'week',
-                                            count: 1,
-                                            text: '1week'
-                                        }, {
-                                            type: 'month',
-                                            count: 1,
-                                            text: '1m'
-                                        }, {
-                                            type: 'month',
-                                            count: 6,
-                                            text: '6m'
-                                        }, {
-                                            type: 'year',
-                                            count: 1,
-                                            text: '1y'
-                                        }, {
-                                            type: 'all',
-                                            text: 'All'
-                                        }],
-                                        selected: 3
-                                    },
-
-                                    yAxis: {
-                                        title: {
-                                            text: 'usage (%)'
-                                        }
-                                    },
-
-                                    title: {
-                                        text: 'CPU Kernel in ESXi, 2014-2015'
-                                    },
-
-                                    subtitle: {
-                                        text: 'Built chart in ...' // dummy text to reserve space for dynamic subtitle
-                                    },
-
-                                    series : seriesOptions8
-                                  });}
+                
                             var names = ['SwapMBytesWrite'];
                             $.each(names, function (i, name) {
                                 var start = +new Date();
+                                var id = '#swapmbwrite';
+                                var seriesOptions = [];
+                                var seriesCounter = 0;
+                                var titlename = 'CPU Swap Write in ESXi, 2014-2015';
                                 $.getJSON('../static/data/memory_swap_mbytes_read.json', function (data) {
-                               seriesOptions8[i] = {
+                               seriesOptions[i] = {
                                     name: name,
                                     data: data.data,
                                     pointStart: data.pointStart,
@@ -919,14 +460,54 @@ ${demo.css}
                                         valueSuffix: '%'
                                     }
                                 };
-                                seriesCounter8 += 1;
-                                if (seriesCounter8 === names.length) {
-                                    createChart8(start);
+                                seriesCounter += 1;
+                                if (seriesCounter === names.length) {
+                                    createChart(id,start,seriesOptions,titlename);
                                 }
                             });
                             });
 
         });
+    
+    $.getJSON('../static/output/memory_kernel_mbytes.json', function (myJSONobj){
+        var irowmax = myJSONobj.records.length;
+        console.log(irowmax);
+        var i, imax, shtml;
+ 
+        if (irowmax < 1) {
+            alert ('No rows in table');
+            return;
+        }
+     
+        var cols = [];
+        //get an array of column names
+        for (var key in myJSONobj.records[0]) {  //assumign all columns present in first record
+            cols[cols.length] = key;
+        }
+     
+        icolmax = cols.length
+     
+        shtml = "<table><tbody><tr>";          //create header row - save html of table in shtml
+        for (i=0;i<icolmax;i++) {
+            shtml += "<th>" + cols[i] + "</th>";
+        }
+        shtml += "</tr>";
+     
+     
+        var irowmax = myJSONobj.records.length;
+     
+        for (irow = 0; irow < irowmax; irow++) {  //add the rows
+            shtml += "<tr>";
+            for (i=0;i<icolmax;i++) {
+                shtml += "<td>" + myJSONobj.records[irow][cols[i]] + "</td>";
+            }
+            shtml += "</tr>";
+        }
+        shtml += "</tbody></table>"
+     
+        document.getElementById('myTable').innerHTML = shtml;   //write the table into div mydiv
+    });
+
 
 </script>
 <script src="../static/js/bootstrap.min.js"></script>
