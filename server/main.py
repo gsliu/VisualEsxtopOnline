@@ -40,6 +40,8 @@ def create_task_dir():
 # Time Format : 2013-10-10 23:40:22
 
 def get_all_tasks():
+    if os.path.isdir('upload')==0:
+       os.mkdir('upload')
     upload_dirs = sorted(os.listdir('upload'))
     for tid in upload_dirs:
         add_new_task(tid)
