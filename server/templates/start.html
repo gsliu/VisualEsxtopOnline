@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LPA - Linux Performance Analyzer</title>
+    <title>Esxtop - ESXI Performance Analyzer</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script src="../static/js/jquery.min.js"></script>
-    <script src="http://code.highcharts.com/stock/highstock.js"></script>
+    <script src="../static/js/highstock.js"></script>
+    <script src="../static/js/dark-unica.js"></script>
     <script src="../static/js/exporting.js"></script>
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/css/docs.min.css">
     <style type="text/css">
 ${demo.css}
-td{
 
-    width: 200px;
-    text-align: left;
-}
     </style>
 </head>
 
@@ -22,7 +19,7 @@ td{
     <div id="top" class="navbar navbar-static-top" role="banner">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">LPA Report</a>
+                <a class="navbar-brand" href="#">Esxtop Report</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul id="myTab" class="nav navbar-nav navbar-left nav-pills" role="tablist">
@@ -35,76 +32,95 @@ td{
     </div>
     <!--Main Content for data reporting-->
     <div class="container bs-docs-container">
-        <!--div class="tab-content"></div-->
+            <div class="tab-content">
+                <div class="tab-pane" id="alarms">
+                    <div id="allwarning" class="row well"></div>
+                </div>
             <div class="tab-pane active" id="datas">
                 <div class="row">
                     <!--here is the main statistic info area-->
                     <div class="col-sm-10" role="main">
                         <div class="bs-docs-section">
-                            <h1 id="group-overview" class="page-header">LPA Data Overview</h1>
+                            <h1 id="group-overview" class="page-header">Esxtop Data Overview</h1>
                             <h3 id="overview-introduction" >Introduction</h3>
-                            <p>LPA (Linux Performance Analyzer) is a performance analysis tool which integrates serveral important system profiling software. LPA contains a guest OS side tool(lpa_client) and a server side tool(lpa_server). The lpa_client is a tool used to install and use profiling packages, and it will collect sample data for further analysis. The lpa_server is a tool used to analysis the sample data collected by lpa_client, and its output is this html file.</p>
+                            <p>EPA(Esxtop Performance Analyzer) is a performance analysis tool which integrates serveral important system profiling software. EPA contains a guest OS side tool(lpa_client) and a server side tool(epa_server). The epa_client is a tool used to install and use profiling packages, and it will collect sample data for further analysis. The lpa_server is a tool used to analysis the sample data collected by lpa_client, and its output is this html file.</p>
                             <p>This report page contains subpages about nearly all aspects of the guest OS's performance, and these subpages are organized by different classes below.</p>
                             <p>Many open-source projects are used in this tool, including oprofile, ftrace, bootstrap, jquery, highcharts and so on.</p>
                         </div>
                         <div class="bs-docs-section">
                             <h1 id="section-1">CPU</h1>
-                            <div id="section-1-1" style="width:100%; height:400px;">
+                            <div id="section-1-1" style="width:100%;">
                                 <h3>Process Time</h3>
                                 <div id="processtime"></div>
+                                <br>
+                                <div id="cputable1" class="row well"></div>
                             </div>
                             <br>
                             <br>
-                            <div id="section-1-2" style="width:100%; height:400px;">
+                            <div id="section-1-2" style="width:100%;">
                                 <h3>Util Time</h3>
                                 <div id="utiltime"></div>
+                                <br>
+                                <div id="cputable2" class="row well"></div>
                             </div>
                             
                         </div>
                         <div class="bs-docs-section">
                             <h1 id="section-2">Memory</h1>
-                            <div id="section-2-1" style="width:100%; height:400px;">
+                            <div id="section-2-1" style="width:100%;">
                                 <h3>Kernel</h3>
                                 <div id="kernel"></div>
+                                <br>
+                                <div id="memorytable1" class="row well"></div>
                             </div>
                             <br>
                             <br>
-                            <div id="section-2-2" style="width:100%; height:400px;">
+                            <div id="section-2-2" style="width:100%;">
                                 <h3>Nonkernel</h3>
                                 <div id="nonkernel"></div>
+                                <br>
+                                <div id="memorytable2" class="row well"></div>
                             </div>
                             <br>
                             <br>
-                            <div id="section-2-3" style="width:100%; height:400px;">
+                            <div id="section-2-3" style="width:100%;">
                                 <h3>Kernel State</h3>
                                 <div id="kernelstate"></div>
+                                <br>
+                                <div id="memorytable3" class="row well"></div>
                             </div>
                             <br>
                             <br>
-                            <div id="section-2-4" style="width:100%; height:400px;">
+                            <div id="section-2-4" style="width:100%;">
                                 <h3>Swap Used</h3>
                                 <div id="swapused"></div>
+                                <br>
+                                <div id="memorytable4" class="row well"></div>
                             </div>
                             <br>
                             <br>
-                            <div id="section-2-5" style="width:100%; height:400px;">
+                            <div id="section-2-5" style="width:100%;">
                                 <h3>Swap MBytes Read</h3>
                                 <div id="swapmbread"></div>
+                                <br>
+                                <div id="memorytable5" class="row well"></div>
                             </div>
                             <br>
                             <br>
-                            <div id="section-2-6" style="width:100%; height:400px;">
+                            <div id="section-2-6" style="width:100%;">
                                 <h3>Swap MBytes Write</h3>
                                 <div id="swapmbwrite"></div>
+                                <br>
+                                <div id="memorytable6" class="row well"></div>
                             </div>
                         </div>
-                        <div class="bs-docs-section">
+                        <!--div class="bs-docs-section">
                             <h1 id="section-3">Warning</h1>
                             <div id="section-3-1">
                                 <h3>Warning</h3>
-                                <div id="myTable"></div>
+                                <div id="myTable1" class="row well"></div>
                             </div>
-                        </div>
+                        </div-->
                     </div>
 
                     <!--here is the sidebar for Affix plugin-->
@@ -135,12 +151,12 @@ td{
                                         <li><a href="#section-2-6">Swap MBytes Write</a></li>
                                     </ul>
                                 </li>
-                                <li>
+                                <!--li>
                                     <a href="#section-3">Warning</a>
                                     <ul class="nav">
                                         <li><a href="#section-3-1">warning</a></li>
                                     </ul>
-                                </li>
+                                </li-->
 
 
 
@@ -152,7 +168,7 @@ td{
                     </div><!--sidebar-->
                 </div>
             </div><!--tab datas-->
-        <!--div></div--><!--tab content-->
+        </div><!--/div--><!--tab content-->
     </div>
     <!--div class="container1">
         <div class="col-sm-12">
@@ -163,21 +179,6 @@ td{
 <script language="JavaScript">
 
         $(function() {
-            Highcharts.setOptions({
-                chart: {
-                    backgroundColor: {
-                        linearGradient: [0, 0, 500, 500],
-                        stops: [
-                            [0, 'rgb(255, 255, 255)'],
-                            [1, 'rgb(240, 255, 255)']
-                            ]
-                    },
-                    borderWidth: 2,
-                    plotBackgroundColor: 'rgba(255, 225, 255, .9)',
-                    plotShadow: true,
-                    plotBorderWidth: 1
-                }
-            });
            createChart = function(id,start,seriesOptions,titlename){
             $(id).highcharts('StockChart', {
                           chart: {
@@ -196,8 +197,8 @@ td{
                         legend: {
                             enabled: true,
                             align: 'right',
-                            backgroundColor: '#FCFFC5',
-                            borderColor: 'black',
+                            //backgroundColor: '#FCFFC5',
+                            //borderColor: 'black',
                             borderWidth: 2,
                             layout: 'vertical',
                             verticalAlign: 'top',
@@ -231,12 +232,14 @@ td{
                                 type: 'all',
                                 text: 'All'
                             }],
-                            selected: 3
+                            selected: 1
                         },
 
                         yAxis: {
                             title: {
-                                text: 'usage (%)'
+                                text: 'usage (%)',
+                                minPadding:0,
+                                startOnTick:false
                             }
                         },
 
@@ -269,8 +272,8 @@ td{
                        seriesOptions[i] = {
                             name: name,
                             data: data.data,
-                            pointStart: data.pointStart,
-                            pointInterval: data.pointInterval,
+                            pointStart: data.pointStart*1000,
+                            pointInterval: data.pointInterval*1000,
                             tooltip: {
                                 valueDecimals: 1,
                                 valueSuffix: '%'
@@ -303,8 +306,8 @@ td{
                        seriesOptions[i] = {
                             name: name,
                             data: data.data,
-                            pointStart: data.pointStart,
-                            pointInterval: data.pointInterval,
+                            pointStart: data.pointStart*1000,
+                            pointInterval: data.pointInterval*1000,
                             tooltip: {
                                 valueDecimals: 1,
                                 valueSuffix: '%'
@@ -328,8 +331,8 @@ td{
                    seriesOptions[i] = {
                         name: name,
                         data: data.data,
-                        pointStart: data.pointStart,
-                        pointInterval: data.pointInterval,
+                        pointStart: data.pointStart*1000,
+                        pointInterval: data.pointInterval*1000,
                         tooltip: {
                             valueDecimals: 1,
                             valueSuffix: '%'
@@ -353,8 +356,8 @@ td{
                        seriesOptions[i] = {
                             name: name,
                             data: data.data,
-                            pointStart: data.pointStart,
-                            pointInterval: data.pointInterval,
+                            pointStart: data.pointStart*1000,
+                            pointInterval: data.pointInterval*1000,
                             tooltip: {
                                 valueDecimals: 1,
                                 valueSuffix: '%'
@@ -378,8 +381,8 @@ td{
                            seriesOptions[i] = {
                                 name: name,
                                 data: data.data,
-                                pointStart: data.pointStart,
-                                pointInterval: data.pointInterval,
+                                pointStart: data.pointStart*1000,
+                                pointInterval: data.pointInterval*1000,
                                 tooltip: {
                                     valueDecimals: 1,
                                     valueSuffix: '%'
@@ -403,8 +406,8 @@ td{
                                seriesOptions[i] = {
                                     name: name,
                                     data: data.data,
-                                    pointStart: data.pointStart,
-                                    pointInterval: data.pointInterval,
+                                    pointStart: data.pointStart*1000,
+                                    pointInterval: data.pointInterval*1000,
                                     tooltip: {
                                         valueDecimals: 1,
                                         valueSuffix: '%'
@@ -428,8 +431,8 @@ td{
                                seriesOptions[i] = {
                                     name: name,
                                     data: data.data,
-                                    pointStart: data.pointStart,
-                                    pointInterval: data.pointInterval,
+                                    pointStart: data.pointStart*1000,
+                                    pointInterval: data.pointInterval*1000,
                                     tooltip: {
                                         valueDecimals: 1,
                                         valueSuffix: '%'
@@ -453,8 +456,8 @@ td{
                                seriesOptions[i] = {
                                     name: name,
                                     data: data.data,
-                                    pointStart: data.pointStart,
-                                    pointInterval: data.pointInterval,
+                                    pointStart: data.pointStart*1000,
+                                    pointInterval: data.pointInterval*1000,
                                     tooltip: {
                                         valueDecimals: 1,
                                         valueSuffix: '%'
@@ -468,16 +471,15 @@ td{
                             });
 
         });
-    
-    $.getJSON('../static/output/memory_kernel_mbytes.json', function (myJSONobj){
+    createtable = function(myJSONobj,tableid,ifempty) {
         var irowmax = myJSONobj.records.length;
-        console.log(irowmax);
+        //console.log(irowmax);
         var i, imax, shtml;
  
-        if (irowmax < 1) {
-            alert ('No rows in table');
-            return;
-        }
+        //if (irowmax < 1) {
+        //   alert ('No rows in table');
+        //    return;
+        //}
      
         var cols = [];
         //get an array of column names
@@ -487,26 +489,96 @@ td{
      
         icolmax = cols.length
      
-        shtml = "<table><tbody><tr>";          //create header row - save html of table in shtml
+        shtml = "<table class='table'><tbody><tr>";          //create header row - save html of table in shtml
         for (i=0;i<icolmax;i++) {
             shtml += "<th>" + cols[i] + "</th>";
         }
         shtml += "</tr>";
      
      
-        var irowmax = myJSONobj.records.length;
+        //var irowmax = myJSONobj.records.length;
      
         for (irow = 0; irow < irowmax; irow++) {  //add the rows
-            shtml += "<tr>";
-            for (i=0;i<icolmax;i++) {
-                shtml += "<td>" + myJSONobj.records[irow][cols[i]] + "</td>";
+            if (myJSONobj.records[irow][cols[0]] === 1) {
+                shtml += "<tr class='danger' data-toggle='tooltip' data-palcement='bottom'>";
+                shtml += "<td>" + "<span class='label label-danger'>danger</span>" + "</td>";
+            }
+            else {
+                shtml += "<tr class='warning' data-toggle='tooltip' data-palcement='bottom'>";
+                shtml += "<td>" + "<span class='label label-warning'>warning</span>" + "</td>";
+            }
+            
+            for (i=1;i<icolmax;i++) {
+                if (i === 3) {
+                    function fixZero(num,length){
+                        var str=""+num;
+                        var len=str.length;
+                        var s="";
+                        for(var i=length;i-->len;){
+                        s+="0";
+                        }
+                        return s+str;
+                        }
+                    var date = new Date(myJSONobj.records[irow][cols[i]]*100000);
+                    //date = date.getTime();
+                    var nowdate = date.getFullYear()+"-"+fixZero(date.getMonth()+1,2)+"-"+fixZero(date.getDate(),2)+" "+fixZero(date.getHours(),2)+":"+fixZero(date.getMinutes(),2)+":"+fixZero(date.getSeconds(),2);
+                    shtml += "<td>" + nowdate + "</td>";
+
+                }
+                else {
+                    shtml += "<td>" + myJSONobj.records[irow][cols[i]] + "</td>";
+
+                }
+                
             }
             shtml += "</tr>";
         }
-        shtml += "</tbody></table>"
-     
-        document.getElementById('myTable').innerHTML = shtml;   //write the table into div mydiv
+        shtml += "</tbody></table>";
+        document.getElementById(tableid).innerHTML = shtml;
+        if (irowmax < 1){
+            document.getElementById(tableid).style.display="none";
+        }
+            
+        
+
+        
+    }
+    
+    $.getJSON('../static/output/cpu_process_time0.json', function (myJSONobj){
+        createtable(myJSONobj,"cputable1");   //write the table into div mydiv
     });
+    $.getJSON('../static/output/cpu_process_time1.json', function (myJSONobj){
+        createtable(myJSONobj,"cputable2");   //write the table into div mydiv
+    });
+    $.getJSON('../static/output/cpu_util_time0.json', function (myJSONobj){
+        createtable(myJSONobj,"cputable3");  //write the table into div mydiv
+    });
+    $.getJSON('../static/output/cpu_util_time1.json', function (myJSONobj){
+        createtable(myJSONobj,"cputable4");   //write the table into div mydiv
+
+    });
+    $.getJSON('../static/output/memory_kernel_mbytes.json', function (myJSONobj){
+        createtable(myJSONobj,"memorytable1");   //write the table into div mydiv
+    });
+    $.getJSON('../static/output/memory_kernel_state.json', function (myJSONobj){
+        createtable(myJSONobj,"memorytable2");   //write the table into div mydiv
+    });
+    $.getJSON('../static/output/memory_nonkernel_mbytes.json', function (myJSONobj){
+        createtable(myJSONobj,"memorytable3");   //write the table into div mydiv
+    });
+    $.getJSON('../static/output/memory_pshare_shared_mbytes.json', function (myJSONobj){
+        createtable(myJSONobj,"memorytable4");   //write the table into div mydiv
+    });
+    $.getJSON('../static/output/memory_swap_mbytes_read.json', function (myJSONobj){
+        createtable(myJSONobj,"memorytable5");   //write the table into div mydiv
+    });
+    $.getJSON('../static/output/memory_swap_mbytes_write.json', function (myJSONobj){
+        createtable(myJSONobj,"memorytable6");   //write the table into div mydiv
+    });
+    $.getJSON('../static/output/logs.json', function (myJSONobj){
+        createtable(myJSONobj,"allwarning");   //write the table into div mydiv
+    });
+
 
 
 </script>
