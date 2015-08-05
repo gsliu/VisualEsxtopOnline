@@ -43,14 +43,18 @@ ${demo.css}
                         <div class="bs-docs-section">
                             <h1 id="group-overview" class="page-header">Esxtop Data Overview</h1>
                             <h3 id="overview-introduction" >Introduction</h3>
-                            <p>EPA(Esxtop Performance Analyzer) is a performance analysis tool which integrates serveral important system profiling software. EPA contains a guest OS side tool(lpa_client) and a server side tool(epa_server). The epa_client is a tool used to install and use profiling packages, and it will collect sample data for further analysis. The lpa_server is a tool used to analysis the sample data collected by lpa_client, and its output is this html file.</p>
+                            <p>The report is provided by Taiji. Taiji is a rule engine based on expert system. It can help us to take a proactive ways to detect issues inside our system.</p>
                             <p>This report page contains subpages about nearly all aspects of the guest OS's performance, and these subpages are organized by different classes below.</p>
                             <p>Many open-source projects are used in this tool, including oprofile, ftrace, bootstrap, jquery, highcharts and so on.</p>
                         </div>
                         <div class="bs-docs-section">
-                            <h1 id="section-1">CPU</h1>
+                            <h1 id="section-1" class="page-header">CPU INFO</h1>
+                            <p></p>
+                            <p>This section is about CPU information of the server ESXI.</p>
                             <div id="section-1-1" style="width:100%;">
-                                <h3>Process Time</h3>
+                                <h3>CPU Processor Time</h3>
+                                <p></p>
+                                <p>Processor Time is the percentage of elapsed time that the processor spends to execute a non-Idle thread.</p>
                                 <div id="processtime"></div>
                                 <br>
                                 <div id="cputable1" class="row well"></div>
@@ -58,7 +62,9 @@ ${demo.css}
                             <br>
                             <br>
                             <div id="section-1-2" style="width:100%;">
-                                <h3>Util Time</h3>
+                                <h3>CPU Util Time</h3>
+                                <p></p>
+                                <p>Percent utilization of logical cores.</p>
                                 <div id="utiltime"></div>
                                 <br>
                                 <div id="cputable2" class="row well"></div>
@@ -66,7 +72,7 @@ ${demo.css}
                             
                         </div>
                         <div class="bs-docs-section">
-                            <h1 id="section-2">Memory</h1>
+                            <h1 id="section-2" class="page-header">MEMORY INFO</h1>
                             <div id="section-2-1" style="width:100%;">
                                 <h3>Kernel</h3>
                                 <div id="kernel"></div>
@@ -134,14 +140,14 @@ ${demo.css}
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="#section-1">CPU</a>
+                                    <a href="#section-1">CPU INFO</a>
                                     <ul class="nav">
-                                        <li><a href="#section-1-1">ProcessTime</a></li>
+                                        <li><a href="#section-1-1">ProcessorTime</a></li>
                                         <li><a href="#section-1-2">UtilTime</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="#section-2">Memory</a>
+                                    <a href="#section-2">MEMORY INFO</a>
                                     <ul class="nav">
                                         <li><a href="#section-2-1">Kernel</a></li>
                                         <li><a href="#section-2-2">NonKernel</a></li>
@@ -162,7 +168,7 @@ ${demo.css}
 
 
 
-<li><a href="#section">Hardware</a><ul class="nav"><li><a href="#basic_hardware">Hardware Info</a></li><li><a href="#basic_system">System Info</a></li><li><a href="#basic_resource">Resource Info</a></li><li><a href="#setting_resource">Setting Info</a></li></ul><li><li><a href="#lpa_l1_cpuirq">CPU IRQ INFO</a><ul class="nav"><li><a href="#proc_cpu_irq">CPU IRQ Info</a></li></ul><li><li><a href="#lpa_l1_cpu">CPU INFO</a><ul class="nav"><li><a href="#mp_cpu_use_each">CPU Use (Each Core)</a></li><li><a href="#mp_cpu_use_all">CPU Use (All, mpstat)</a></li><li><a href="#sar_cpu_use">CPU Use (All)</a></li><li><a href="#sar_cpu_usrsysnice">CPU Use (User/Sys/Nice)</a></li><li><a href="#sar_cpu_iowait">CPU IO Wait</a></li><li><a href="#sar_cpu_interrupt">CPU Interrupt</a></li></ul><li><li><a href="#lpa_l1_task">TASK INFO</a><ul class="nav"><li><a href="#sar_task_queue">Task Queue Length</a></li><li><a href="#sar_task_number">Task Number</a></li><li><a href="#sar_task_switch">Task Switch</a></li></ul><li><li><a href="#lpa_l1_mem">MEM INFO</a><ul class="nav"><li><a href="#sar_mem_used">Mem Used (kb)</a></li><li><a href="#sar_mem_usepercent">Mem Use (%)</a></li><li><a href="#sar_mem_stat">Mem Stat (kb)</a></li><li><a href="#sar_swap_used">Swap Used (kb)</a></li><li><a href="#sar_swap_usepercent">Swap Used (%)</a></li><li><a href="#sar_swap_io">Swap Page IO</a></li><li><a href="#sar_paging_io">Paging IO</a></li><li><a href="#sar_paging_fault">Paging Fault</a></li><li><a href="#sar_paging_operate">Paging Operation</a></li><li><a href="#sar_paging_vmeff">Virtual Memory Efficiency</a></li></ul><li><li><a href="#lpa_l1_net">NET INFO</a><ul class="nav"><li><a href="#sar_net_ip_io">Network IP (IO)</a></li><li><a href="#sar_net_ip_asem">Network IP (Assemble)</a></li><li><a href="#sar_net_ip_err">Network IP (Errors)</a></li><li><a href="#sar_net_tcp_io">Network TCP (IO)</a></li><li><a href="#sar_net_tcp_err">Network TCP (Errors)</a></li><li><a href="#netstat_net_tcp_io">TCP ESTABLISH (Netstat)</a></li><li><a href="#netstat_net_tcp_tw">TCP IO TIME WAIT (Netstat)</a></li><li><a href="#netstat_net_tcp_fin">TCP FINISH (Netstat)</a></li></ul><li><li><a href="#lpa_l1_disk">DISK INFO</a><ul class="nav"><li><a href="#sar_disk_io_tps">Disk IO (tps)</a></li><li><a href="#sar_disk_io_read">Disk IO (Read)</a></li><li><a href="#sar_disk_io_write">Disk IO (Write)</a></li><li><a href="#sar_disk_io_await">Disk IO (Await Time)</a></li><li><a href="#sar_disk_io_util">Disk IO (Utilization)</a></li></ul><li><li><a href="#lpa_l1_ftrace">FUNC INFO</a><ul class="nav"></ul><li><li><a href="#lpa_l1_oprofile">PMC INFO</a><ul class="nav"><li><a href="#oprofile_event_cpu">Events (CPU and INST)</a></li><li><a href="#oprofile_event_llc">Events (LLC Miss/Refs)</a></li></ul><li>                            </ul>
+<li><li><a href="#lpa_l1_task">TASK INFO</a><ul class="nav"><li><a href="#sar_task_queue">Task Queue Length</a></li><li><a href="#sar_task_number">Task Number</a></li><li><a href="#sar_task_switch">Task Switch</a></li></ul><li><li><a href="#lpa_l1_mem">MEM INFO</a><ul class="nav"><li><a href="#sar_mem_used">Mem Used (kb)</a></li><li><a href="#sar_mem_usepercent">Mem Use (%)</a></li><li><a href="#sar_mem_stat">Mem Stat (kb)</a></li><li><a href="#sar_swap_used">Swap Used (kb)</a></li><li><a href="#sar_swap_usepercent">Swap Used (%)</a></li><li><a href="#sar_swap_io">Swap Page IO</a></li><li><a href="#sar_paging_io">Paging IO</a></li><li><a href="#sar_paging_fault">Paging Fault</a></li><li><a href="#sar_paging_operate">Paging Operation</a></li><li><a href="#sar_paging_vmeff">Virtual Memory Efficiency</a></li></ul><li><li><a href="#lpa_l1_net">NET INFO</a><ul class="nav"><li><a href="#sar_net_ip_io">Network IP (IO)</a></li><li><a href="#sar_net_ip_asem">Network IP (Assemble)</a></li><li><a href="#sar_net_ip_err">Network IP (Errors)</a></li><li><a href="#sar_net_tcp_io">Network TCP (IO)</a></li><li><a href="#sar_net_tcp_err">Network TCP (Errors)</a></li><li><a href="#netstat_net_tcp_io">TCP ESTABLISH (Netstat)</a></li><li><a href="#netstat_net_tcp_tw">TCP IO TIME WAIT (Netstat)</a></li><li><a href="#netstat_net_tcp_fin">TCP FINISH (Netstat)</a></li></ul><li><li><a href="#lpa_l1_disk">DISK INFO</a><ul class="nav"><li><a href="#sar_disk_io_tps">Disk IO (tps)</a></li><li><a href="#sar_disk_io_read">Disk IO (Read)</a></li><li><a href="#sar_disk_io_write">Disk IO (Write)</a></li><li><a href="#sar_disk_io_await">Disk IO (Await Time)</a></li><li><a href="#sar_disk_io_util">Disk IO (Utilization)</a></li></ul><li><li><a href="#lpa_l1_ftrace">FUNC INFO</a><ul class="nav"></ul><li><li><a href="#lpa_l1_oprofile">PMC INFO</a><ul class="nav"><li><a href="#oprofile_event_cpu">Events (CPU and INST)</a></li><li><a href="#oprofile_event_llc">Events (LLC Miss/Refs)</a></li></ul><li>                            </ul>
                         </div>
                         <div><a href="#top" class="btn btn-info" style="position:fixed;bottom:10px;">TOP</a></div>
                     </div><!--sidebar-->
@@ -489,7 +495,7 @@ ${demo.css}
      
         icolmax = cols.length
      
-        shtml = "<table class='table'><tbody><tr>";          //create header row - save html of table in shtml
+        shtml = "<table class='table'><tbody><tr>";           //create header row - save html of table in shtml
         for (i=0;i<icolmax;i++) {
             shtml += "<th>" + cols[i] + "</th>";
         }
@@ -519,7 +525,7 @@ ${demo.css}
                         }
                         return s+str;
                         }
-                    var date = new Date(myJSONobj.records[irow][cols[i]]*100000);
+                    var date = new Date(myJSONobj.records[irow][cols[i]]*1000);
                     //date = date.getTime();
                     var nowdate = date.getFullYear()+"-"+fixZero(date.getMonth()+1,2)+"-"+fixZero(date.getDate(),2)+" "+fixZero(date.getHours(),2)+":"+fixZero(date.getMinutes(),2)+":"+fixZero(date.getSeconds(),2);
                     shtml += "<td>" + nowdate + "</td>";
@@ -544,19 +550,19 @@ ${demo.css}
         
     }
     
-    $.getJSON('../static/output/cpu_process_time0.json', function (myJSONobj){
+    $.getJSON('../static/output/process.json', function (myJSONobj){
         createtable(myJSONobj,"cputable1");   //write the table into div mydiv
     });
-    $.getJSON('../static/output/cpu_process_time1.json', function (myJSONobj){
+    $.getJSON('../static/output/util.json', function (myJSONobj){
         createtable(myJSONobj,"cputable2");   //write the table into div mydiv
     });
-    $.getJSON('../static/output/cpu_util_time0.json', function (myJSONobj){
-        createtable(myJSONobj,"cputable3");  //write the table into div mydiv
-    });
-    $.getJSON('../static/output/cpu_util_time1.json', function (myJSONobj){
-        createtable(myJSONobj,"cputable4");   //write the table into div mydiv
+    //$.getJSON('../static/output/cpu_util_time0.json', function (myJSONobj){
+    //    createtable(myJSONobj,"cputable3");  //write the table into div mydiv
+    //});
+    //$.getJSON('../static/output/cpu_util_time1.json', function (myJSONobj){
+    //    createtable(myJSONobj,"cputable4");   //write the table into div mydiv
 
-    });
+    //});
     $.getJSON('../static/output/memory_kernel_mbytes.json', function (myJSONobj){
         createtable(myJSONobj,"memorytable1");   //write the table into div mydiv
     });
